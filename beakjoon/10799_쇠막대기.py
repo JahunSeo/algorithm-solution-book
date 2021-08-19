@@ -1,37 +1,29 @@
-questions = "()(((()())(())()))(())"
+questions = "()(((()())(())()))(())" # 17
+questions = "(((()(()()))(())()))(()())" # 24
 # questions = "(()())"
 # questions = "((()()))" # 반례!
 print("questions", questions)
 
 stack = []
 answer = 0
-sub_count = 0
-for q in questions:
-    # 시작 괄호인 경우 스택에 추가
+i = 0
+# 레이저의 닫는 괄호를 건너 뛰는 코드를 넣기 위해 for문 대신 while문 사용
+while i < len(questions):
+    q = questions[i]
+    # 시작 괄호인 경우, 레이저인지 막대인지 구분
     if q == "(":
-        sub_count += 1
-        stack.append(q)
-        continue
-    # 끝 괄호인 경우
-    # 바로 닫히는 경우, 즉 레이저인 경우
-    if stack[-1] == "(":
-        # 스택에서 레이저를 뺀 뒤, 남은 시작 괄호의 수를 센다
+        if questions[i+1] == ")": # 레이저
+            answer += len(stack)
+            # 다음에 오는 닫는 괄호는 탐색에서 건너 뛰도록 하고
+            # 그러므로 레이저 시작 괄호 또한 스택에 넣지 않음
+            i += 1 
+        else: # 새로운 막대
+            answer += 1
+            stack.append(q)
+    # 닫는 괄호인 경우, 막대를 닫아줌
+    else:
         stack.pop()
-        sub_count -= 1
-        answer += sub_count # sum((c == "(" for c in stack))
-        # 스택에 L을 추가한다
-        stack.append("L")
-        continue
-    elif stack[-1] == "L":
-        # 스택에서 "(" 를 만날 때까지 레이저를 뺀다
-        while stack:
-            prev = stack.pop()
-            if prev == "(":
-                # 막대 끝단을 개수에 추가
-                sub_count -= 1
-                answer += 1
-                # 다시 막대임을 표시해줌
-                stack.append("L")
-                break
+    i += 1
+
 
 print(answer)
