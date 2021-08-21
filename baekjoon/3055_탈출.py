@@ -48,47 +48,52 @@ for r, c in BLOCK:
 dxs = [-1, 1, 0, 0]
 dys = [0, 0, -1, 1]
 
-def BFS(matrix, frontier):
-    frontier = deque(frontier)
-    while frontier:
-        v1 = frontier.popleft()
-        x1, y1 = v1
-        for dx, dy in zip(dxs, dys):
-            x2, y2 = x1+dx, y1+dy
-            # 존재하는 위치인지 확인
-            if x2 < 0 or x2 >= R or y2 < 0 or y2 >= C:
-                continue
-            # 장애물이거나 이미 탐색된 영역인지 확인 (홍수 매트릭스의 경우, 도착지점 여부 함께 확인)
-            if matrix[x2][y2] != 0:
-                continue
-            # 탐색되지 않은 영역인 경우
-            matrix[x2][y2] = matrix[x1][y1] + 1
-            frontier.append((x2,y2))
+print("flood before", flood_matrix)
+frontier = deque(WIZARD[:])
+while frontier:
+    v1 = frontier.popleft()
+    x1, y1 = v1
+    for dx, dy in zip(dxs, dys):
+        x2, y2 = x1+dx, y1+dy
+        # 존재하는 위치인지 확인
+        if x2 < 0 or x2 >= R or y2 < 0 or y2 >= C:
+            continue
+        # 장애물이거나 이미 탐색된 영역인지 확인 
+        # (홍수 매트릭스의 경우, 도착지점 여부 함께 확인)
+        if flood_matrix[x2][y2] != 0:
+            continue
+        # 탐색되지 않은 영역인 경우
+        flood_matrix[x2][y2] = flood_matrix[x1][y1] + 1
+        frontier.append((x2,y2))
+print("flood after ", flood_matrix)
 
-# print("flood before", flood_matrix)
-BFS(flood_matrix, WIZARD[:])
-# print("flood after ", flood_matrix)
+print("route before", route_matrix)
+frontier = deque([START])
+while frontier:
+    v1 = frontier.popleft()
+    x1, y1 = v1
+    time1 = route_matrix[x1][y1]
+    for dx, dy in zip(dxs, dys):
+        x2, y2 = x1+dx, y1+dy
+        time2 = time1 + 1
+        # 존재하는 위치인지 확인
+        if x2 < 0 or x2 >= R or y2 < 0 or y2 >= C:
+            continue
+        # 장애물이거나 이미 탐색된 영역인지 확인
+        if route_matrix[x2][y2] != 0:
+            continue
+        # 이미 물이 차오른 영역인지 확인
+        if flood_matrix[x2][y2] <= time2:
+            continue
+        # 이동 가능한 영역인 경우
+        route_matrix[x2][y2] = time2
+        frontier.append((x2,y2))
+print("route after ", route_matrix)
 
-# print("route before", route_matrix)
-BFS(route_matrix, [START])
-# print("route after ", route_matrix)
-
-# 3단계: 좌표 비교하기
-# 목표 지점의 상하좌우 중 한 곳이라도 flood_matrix > route_matrix 인 곳이 있다면 성공
-# 성공이라면 목표지점의 최소 경로 제출
-
-success_time = float("inf")
-for dx, dy in zip(dxs, dys):
-    x, y = GOAL[0] + dx, GOAL[1] + dy
-    if x < 0 or x >= R or y < 0 or y >= C:
-        continue
-    route_time = route_matrix[x][y]
-    flood_time = flood_matrix[x][y]
-    if route_time < flood_time and route_time < success_time:
-        success_time = route_time
-
-if success_time:
-    # 정확히는 1을 더한 뒤 다시 1을 뺀 값
-    print(success_time) 
+# 3단계: 좌표 확인하기
+x, y = GOAL
+time = route_matrix[x][y] 
+if time:
+    print(time - 1)
 else:
     print("KAKTUS")
