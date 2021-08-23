@@ -24,10 +24,10 @@ def DFS_visit(adj, v1, parent, results):
                 DFS_visit(adj, v2, parent, results)
     results.append(v1)
 
+# 3단계: 각 정점을 시작점으로 DFS를 실행했을 때, 해당 정점의 자손 개수를 카운트
 answers = set()
-# 각 vertex를 시작점으로 했을 때, 해당 vertex의 자손들의 수를 셈
 for v1 in range(1, N+1):
-    # 정순 방향
+    # 정방향 그래프 탐색 (오름차순)
     parent, results = {}, []
     parent[v1] = None
     DFS_visit(adj_f, v1, parent, results)
@@ -38,7 +38,7 @@ for v1 in range(1, N+1):
     if len(results)-1 >= (N+1)//2:
         answers.add(v1)
         continue
-    # 역순 방향
+    # 역방향 그래프 탐색 (내림차순)
     parent, results = {}, []
     parent[v1] = None
     DFS_visit(adj_b, v1, parent, results)
