@@ -17,31 +17,43 @@ for _ in range(M):
 # print("인접 리스트 :", adj)
 # print("진입 차수 :", in_deg)
 
-# 2단계: 진입 차수가 0인 정점으로 큐 초기화
-queue = deque()
-for v in range(1, N+1):
-    if in_deg[v] == 0:
-        queue.append(v)
-# print("큐 시작 :", queue)
+# 2단계: 깊이 우선 탐색 함수 구현하기
+def DFS_visit(adj, v1, visited, stack):
+    # v1가 이미 탐색 완료 항목에 있는 경우, 추가 탐색 불필요
+    if v1 in visited:
+        return True
+    # v1가 이미 스택에 있는 경우, 조상에 해당하므로 순환 그래프임
+    if v1 in stack:
+        return False
+    # 탐색 시작 시점에 스택에 v1 추가
+    stack.append(v1)
+    # 다음 depth의 정점들을 탐색 
+    if v1 in adj:
+        for v2 in adj[v1]:
+            # 앞선 탐색에서 순환이 발생했는지 확인
+            if not DFS_visit(adj, v2, visited, stack):
+                return False
+    # 탐색 종료 시점에 스택에서 v1 제거
+    stack.pop()
+    # 탐색 완료 항목에 v1 추가
+    visited.append(v1)
+    return True
 
-# 3단계: 진입 차수가 0인 정점들을 하나씩 정리
-# - 진입 차수가 0인 정점 v1을 빼면서 v1에서 출발하는 간선들을 제거
-answers = []
-while queue:
-    v1 = queue.popleft()
-    answers.append(v1)
-    # v1에서 출발하는 간선들을 제거 (도착 정점 v2의 진입 차수에서 1씩 감소)
-    for v2 in adj[v1]:
-        in_deg[v2] -= 1
-        # 진입 차수가 0이 되면 큐에 추가
-        if in_deg[v2] == 0:
-            queue.append(v2)
+# 3단계: 탐색 실시
+visited = [] # 정점들이 탐색이 종료된 순서대로 추가됨
+stack = [] # 새로운 정점의 탐색을 시작할 때 스택에 추가하고 탐색 종료 시 스택에서 제거
+for v1 in range(1, N+1):
+    # 순환이 발생하면 탐색 종료
+    if not DFS_visit(adj, v1, visited, stack):
+        break
+# 역순으로 정렬
+visited.reverse()    
 
 # 4단계: 순환 그래프인지 여부 확인
 # - 탐색을 마친 뒤 모든 정점이 정리되지 않았다는 것은, 간선이 남은 정점이 있음을 의미
 # - 간선이 남은 정점이 있다는 것은 순환이 존재했음을 의미!
-if len(answers) == N:
-    for singer in answers:
+if len(visited) == N:
+    for singer in visited:
         print(singer)
 else: 
     print(0)
