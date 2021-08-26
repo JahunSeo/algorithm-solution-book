@@ -24,11 +24,7 @@ def BFS(s):
             # 새로운 위치인 경우, 우선 목표 지점인지 확인
             if v2 == N:
                 return time2
-            # 새로운 위치이지만 목표 지점이 아닌 경우
-            # 새로운 탐색 대상인지 판단
-            if v2 < N//2:
-                continue
-            # 새로운 탐색 대상으로 판단될 경우
+            # 새로운 위치이지만 목표 지점이 아닌 경우, 탐색 범위에 추가
             parent.add(v2)
             frontier.append((v2, time2))
     return False
