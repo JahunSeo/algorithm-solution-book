@@ -19,26 +19,27 @@ for _ in range(M):
 # 2단계: 최종 제품을 만들기 위해 필요한 기본 부품 세기
 # 누적된 기본 부품을 세는 dict 초기화
 subitems = defaultdict(int)
-# 최종 제품으로 frontier 초기화
+# 최종 제품으로 frontier 초기화 (DFS를 위해 스택으로 변경)
 s = N
-frontier = deque([(s, 1)])
-while frontier:
-    # 부품 v1, 필요한 개수 k1
-    v1, k1 = frontier.popleft()
-    # v1의 각 하위 부품을 확인
+frontier = [(s, 1)]
+storage = {}
+
+def DFS_visit(v1):
+    if v1 in storage:
+        return storage[v1]
+    v1_sub = defaultdict(int)
     for v2, k2 in adj[v1]:
-        # v2가 인접 리스트에 없는 경우, 기본 부품이므로 더 이상 분리 불가
         if v2 not in adj:
-            # 기본 부품 개수에 누적 후 다음 부품으로 넘어감
-            subitems[v2] += k1*k2
-        # v2가 인접 리스트에 있는 경우, 추가 분리가 필요
+            v1_sub[v2] += k2
         else:
-            # 이 때, v1을 1개 만들기 위해 v2가 k2개 필요하므로,
-            # v1을 k1개 만들기 위해서는 v2가 k1*k2개 필요
-            frontier.append((v2, k1*k2))
+            v2_sub = DFS_visit(v2)
+            for v3, k3 in v2_sub.items():
+                v1_sub[v3] += k2*k3
+    storage[v1] = v1_sub
+    return v1_sub
 
-# 누적된 기본 부품 개수 출력
+DFS_visit(s)
+
 for i in range(1, N+1):
-    if i in subitems:
-        print(i, subitems[i])
-
+    if i in storage[s]:
+        print(i, storage[s][i])
