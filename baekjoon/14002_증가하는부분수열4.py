@@ -42,6 +42,6 @@ for i in range(len(values)-1, -1, -1):
         count -= 1
 answer.reverse()
 
-# print(results, values, storage)
+print(results, values, storage)
 print(max_length)
 print(" ".join([str(c) for c in answer]))
