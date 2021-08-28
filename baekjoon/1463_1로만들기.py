@@ -13,7 +13,7 @@ N = int(sys.stdin.readline())
 memo = [None] * (N+1)
 
 # 3단계: 함수 생성 
-# - 하위 문제의 순서(topological order)를 고려해 순서대로 실행
+# - 부분 문제의 선후 관계(topological order)를 고려해 순서대로 실행
 
 # 하향식 
 def fn_topdown(x):
