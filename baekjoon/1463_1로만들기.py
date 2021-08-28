@@ -15,7 +15,7 @@ memo = [None] * (N+1)
 # 3단계: 함수 생성 
 # - 하위 문제의 순서(topological order)를 고려해 순서대로 실행
 
-# 하향식 방식
+# 하향식 
 def fn_topdown(x):
     if memo[x]:
         return memo[x]
@@ -29,13 +29,13 @@ def fn_topdown(x):
 
     subscores = [] # 각 부분문제들의 정답
     for p in subproblems:
-        memo[p] = fn_topdown(p)
-        subscores.append(memo[p])
+        subscores.append(fn_topdown(p))
 
     # 각 부분문제의 정답을 고려해 현재 문제 x에 대한 정답을 선택
-    return 1 + min(subscores)
+    memo[x] = 1 + min(subscores)
+    return memo[x]
 
-# 하향식 방식 효율화 버전
+# 하향식 재구성
 def fn_topdown2(x):
     if memo[x]:
         return memo[x]
@@ -54,7 +54,7 @@ def fn_topdown2(x):
     memo[x] = 1 + min_subscore
     return memo[x]  
 
-# 상향식 방식
+# 상향식
 from collections import deque
 def fn_bottomup(x):
     memo[1] = 0
@@ -71,8 +71,22 @@ def fn_bottomup(x):
                 frontier.append(next_v)
         # print(memo)                
     return memo[x]
-    
+
+# 상향식 재구성
+def fn_bottomup2(x):
+    memo = [None] * (N+1)
+    memo[1] = 0
+    for i in range(2, N+1):
+        min_subscore = float("inf")
+        if memo[i-1] != None:
+            min_subscore = min(min_subscore, memo[i-1]) 
+        if i%2 == 0 and memo[i//2] != None:
+            min_subscore = min(min_subscore, memo[i//2]) 
+        if i%3 == 0 and memo[i//3] != None:
+            min_subscore = min(min_subscore, memo[i//3]) 
+        memo[i] = min_subscore + 1
+    return memo[x]
 
 # 4단계: 본래의 문제 해결
-print(fn_topdown2(N))
-# print(fn_bottomup(N))
+# print(fn_topdown2(N))
+print(fn_bottomup2(N))
