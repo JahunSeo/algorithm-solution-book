@@ -52,4 +52,4 @@ for i in range(1, len(A)):
 # print_memo()
 answer = memo[len(A)-1][len(B)-1]
 print(answer[0])
-# print(answer[1])
+print(answer[1])
