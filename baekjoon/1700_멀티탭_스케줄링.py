@@ -38,8 +38,7 @@ for item, next_loc in updated:
         heapq.heappush(current, [-next_loc, item])
         continue
     # 콘센트에서 뽑아야 하는 경우
-    deleted = heapq.heappop(current)
-    # print("  pop",  deleted)
+    heapq.heappop(current)
     heapq.heappush(current, [-next_loc, item])
     count += 1
 
