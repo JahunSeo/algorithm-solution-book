@@ -20,17 +20,27 @@ for idx in range(K):
 count = 0        
 current = []    
 for item, next_loc in updated:
-    # print(item, current)
+    # print(item, next_loc, current)
     # 이미 콘센트에 있는 경우
-    if sum(c == item for _, c in current) != 0:
+    # - 주의! 최신값으로 업데이트해주어야 함
+    used = False
+    for j in range(len(current)):
+        _, c = current[j]
+        if c == item:
+            used = True
+            current[j][0] = -next_loc
+            heapq.heapify(current)
+            break
+    if used:
         continue
     # 콘센트에 자리가 남는 경우
     if len(current) < N:
-        heapq.heappush(current, (-next_loc, item))
+        heapq.heappush(current, [-next_loc, item])
         continue
     # 콘센트에서 뽑아야 하는 경우
-    heapq.heappop(current)
-    heapq.heappush(current, (-next_loc, item))
+    deleted = heapq.heappop(current)
+    # print("  pop",  deleted)
+    heapq.heappush(current, [-next_loc, item])
     count += 1
 
 print(count)
