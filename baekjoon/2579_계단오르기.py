@@ -20,9 +20,9 @@ if N >=2 :
     memo[1][0] = steps[1]
     memo[1][1] = memo[0][0] + steps[1]
 
-for i in range(3, N):
+for i in range(2, N):
     # False 처리
-    memo[i][0] = max(memo[i-2][0], memo[i-2][1]) + steps[i]
+    memo[i][0] = max(memo[i-2]) + steps[i]
     # True 처리
     memo[i][1] = max(memo[i-1][0], memo[i-2][0], memo[i-2][1]) + steps[i]
 
