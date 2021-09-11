@@ -1,7 +1,7 @@
 def solution(n, k):
     answer = 0
 
-    prime = [False, False] + [None]* (n*k)
+    prime = [False, False] + [None]* (n-1)
     def is_prime(x):
         if prime[x] != None:
             return prime[x]
